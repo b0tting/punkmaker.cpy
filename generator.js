@@ -781,10 +781,33 @@ function loadRandomChat() {
     // Get random conversation
     const conversation = getRandomConversation();
 
-    // Add each line
+    // Track unique users for color assignment
+    const userColors = new Map();
+    let userColorIndex = 1;
+
+    // Add each line with staggered animation
     conversation.forEach((line, index) => {
       const chatLine = document.createElement('div');
       chatLine.className = 'chat-line';
+
+      // Determine line type and assign color
+      if (line.startsWith(':// SYSTEM:')) {
+        chatLine.classList.add('system');
+      } else if (line.startsWith('://')) {
+        // Extract username from line like ":// username: message"
+        const usernameMatch = line.match(/^:\/\/\s*([^:]+):/);
+        if (usernameMatch) {
+          const username = usernameMatch[1].trim();
+
+          // Assign color to this user if not already assigned
+          if (!userColors.has(username)) {
+            userColors.set(username, userColorIndex);
+            userColorIndex = (userColorIndex % 5) + 1; // Cycle through 5 colors
+          }
+
+          chatLine.classList.add(`user-${userColors.get(username)}`);
+        }
+      }
 
       // Add cursor to last line
       if (index === conversation.length - 1) {
@@ -792,6 +815,9 @@ function loadRandomChat() {
       } else {
         chatLine.textContent = line;
       }
+
+      // Set animation delay for typewriter effect
+      chatLine.style.animationDelay = `${index * 1.5}s`;
 
       chatLog.appendChild(chatLine);
     });

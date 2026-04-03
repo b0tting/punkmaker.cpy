@@ -74,6 +74,32 @@ body {
 .chat-line {
     color: var(--color-white);
     word-wrap: break-word;
+    opacity: 0;
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.chat-line.system {
+    color: var(--color-cyan);
+}
+
+.chat-line.user-1 {
+    color: #00ff00;
+}
+
+.chat-line.user-2 {
+    color: #ffff00;
+}
+
+.chat-line.user-3 {
+    color: #ff00ff;
+}
+
+.chat-line.user-4 {
+    color: #ff8800;
+}
+
+.chat-line.user-5 {
+    color: #00ffff;
 }
 
 .cursor {
@@ -226,12 +252,52 @@ body {
     text-transform: uppercase;
     letter-spacing: 3px;
     margin-bottom: 10px;
-    text-shadow: 0 0 15px rgba(0, 0, 251, 0.6);
+    position: relative;
+    text-shadow:
+        0 0 15px rgba(0, 0, 251, 0.6),
+        2px 0 0 rgba(255, 0, 0, 0.5),
+        -2px 0 0 rgba(0, 255, 255, 0.5);
 }
 
 .title::before {
     content: '▶ ';
     color: var(--color-pink);
+}
+
+.title::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--color-pink);
+    z-index: -1;
+    text-shadow:
+        -1px 0 0 rgba(255, 0, 255, 0.7),
+        1px 0 0 rgba(0, 255, 0, 0.7);
+    animation: glitch 3s infinite;
+}
+
+@keyframes glitch {
+    0%, 100% {
+        transform: translate(0, 0);
+        opacity: 0.8;
+    }
+    20% {
+        transform: translate(-2px, 1px);
+        opacity: 0.9;
+    }
+    40% {
+        transform: translate(2px, -1px);
+        opacity: 0.7;
+    }
+    60% {
+        transform: translate(-1px, 2px);
+        opacity: 0.8;
+    }
+    80% {
+        transform: translate(1px, -2px);
+        opacity: 0.9;
+    }
 }
 
 .subtitle {
