@@ -1,0 +1,13 @@
+services:
+  punkmaker:
+    image: nginx:alpine
+    container_name: cyborg-punkmaker
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    restart: unless-stopped
+    environment:
+      - NGINX_HOST=localhost
+      - NGINX_PORT=80

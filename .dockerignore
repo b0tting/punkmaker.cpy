@@ -1,0 +1,25 @@
+# Git
+.git
+.gitignore
+
+# Node
+node_modules
+package-lock.json
+
+# Original files
+index.original.html
+dom.html
+index_files
+
+# Test files
+test-generator.js
+
+# Documentation
+README.md
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
