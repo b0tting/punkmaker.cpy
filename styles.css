@@ -244,6 +244,95 @@ body {
     margin-bottom: 40px;
 }
 
+.tab-nav {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+}
+
+.tab-btn {
+    padding: 12px 20px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: var(--color-black);
+    color: var(--color-cyan);
+    border: 2px solid var(--color-cyan);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+    color: var(--color-black);
+    background: var(--color-cyan);
+    box-shadow: 0 0 16px rgba(91, 186, 213, 0.5);
+}
+
+.tab-btn.active {
+    color: var(--color-black);
+    background: var(--color-pink);
+    border-color: var(--color-pink);
+    box-shadow: 0 0 18px rgba(255, 0, 255, 0.45);
+}
+
+.tab-panel {
+    display: none;
+}
+
+.tab-panel.active {
+    display: block;
+}
+
+.reference-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+    margin-bottom: 40px;
+}
+
+.reference-block {
+    padding: 18px;
+    border-top: 2px solid var(--color-pink);
+    border-left: 2px solid var(--color-pink);
+    border-right: 2px solid var(--color-primary);
+    border-bottom: 2px solid var(--color-primary);
+    background-color: var(--color-bg-medium);
+    box-shadow:
+        -3px -3px 14px rgba(255, 0, 255, 0.25),
+        3px 3px 14px rgba(0, 0, 251, 0.25);
+}
+
+.reference-block h3 {
+    font-family: var(--font-display);
+    font-size: 22px;
+    color: var(--color-cyan);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.reference-block h3::before {
+    content: '▸ ';
+    color: var(--color-pink);
+}
+
+.reference-block p,
+.reference-block li {
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 14px;
+    line-height: 1.55;
+}
+
+.reference-block p + p {
+    margin-top: 6px;
+}
+
+.reference-block ul {
+    margin-left: 18px;
+}
+
 .title {
     font-family: var(--font-display);
     font-size: 48px;
@@ -1147,6 +1236,30 @@ body {
 
     .stats-section {
         grid-template-columns: 1fr;
+    }
+
+    .tab-nav {
+        flex-direction: column;
+    }
+
+    .tab-btn {
+        width: 100%;
+        font-size: 15px;
+        padding: 14px 20px;
+    }
+
+    .reference-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .reference-block h3 {
+        font-size: 24px;
+    }
+
+    .reference-block p,
+    .reference-block li {
+        font-size: 16px;
+        line-height: 1.75;
     }
 
     .actions {

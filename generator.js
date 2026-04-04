@@ -928,6 +928,40 @@ function loadRandomChat() {
   }
 }
 
+function initTabs() {
+  const tabButtons = document.querySelectorAll('.tab-btn');
+  const tabPanels = document.querySelectorAll('.tab-panel');
+
+  if (!tabButtons.length || !tabPanels.length) {
+    return;
+  }
+
+  tabButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const targetId = button.dataset.tabTarget;
+      if (!targetId) return;
+
+      tabButtons.forEach((btn) => {
+        btn.classList.remove('active');
+        btn.setAttribute('aria-selected', 'false');
+      });
+
+      tabPanels.forEach((panel) => {
+        panel.classList.remove('active');
+        panel.setAttribute('aria-hidden', 'true');
+      });
+
+      const targetPanel = document.getElementById(targetId);
+      if (targetPanel) {
+        button.classList.add('active');
+        button.setAttribute('aria-selected', 'true');
+        targetPanel.classList.add('active');
+        targetPanel.setAttribute('aria-hidden', 'false');
+      }
+    });
+  });
+}
+
 // Auto-initialize if in browser
 if (typeof window !== 'undefined') {
   window.PunkGenerator = {
@@ -941,6 +975,8 @@ if (typeof window !== 'undefined') {
 
   // Generate initial character on page load
   document.addEventListener('DOMContentLoaded', () => {
+    initTabs();
+
     // Load random chat
     loadRandomChat();
 

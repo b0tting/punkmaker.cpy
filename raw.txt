@@ -1,0 +1,166 @@
+. Abilities and tests . Nano
+
+AGILITY Sneak, dodge, drive, autofire
+KNOWLEDGE Science, use tech or App
+PRESENCE Snipe/shoot, use Nano, persuade
+STRENGTH Strike, grapple, lift, throw
+TOUGHNESS Survive falling, poison and elements
+
+TESTS
+Roll d20 ± ability
+equal to or greater
+than DR to succeed.
+Enemies usually don’t
+roll, but if necessary,
+they just roll a flat
+d20 against the DR.
+
+DIFFICULTY RATINGS (DR) 6 simple 8 routine
+10 easy
+12 NORMAL
+14 difficult
+16 really hard
+18 almost impossible
+
+
+
+USE NANO
+Test Presence DR12.
+Failure means the power
+doesn’t work and the
+user takes d2 damage.
+Each Nano-use increases
+the risk of fumble by 1
+for the day.
+
+INFESTATIONS
+Infestations linked
+to a Nano power:
+Trigger upon fumbling.
+
+Infestations not linked
+to a Nano power:
+Trigger upon receiving
+5+ damage from a single
+attack and failing a
+DR10 Presence test.
+
+GLITCHES
+▸ Deal maximum damage
+▸ Reroll a dice
+▸ Lower damage taken by d6
+▸ Neutralize a Crit or Fumble
+▸ Lower one test’s DR by −4
+(before rolling)
+
+Regain d2 (or class
+die) each morning if all
+Glitches are depleted.
+
+REST
+Short break heal d4 HP
+Eat, drink, sleep heal d6 HP
+
+
+USE APP
+Knowledge DR12 while
+jacked into a Deck (+2DR
+on all non-App actions).
+Fumble burns the App
+for the day and triggers a
+Backlash. Each App-use
+raises the risk of fumble
+by 1 until next day.
+NON-APP HACKING
+Time-consuming downtime
+
+activity requiring a cyber-
+deck. Test Knowledge to break into a data node.
+Failure means you are
+discovered. Fumbling
+triggers a Backlash.
+
+
+.COMBAT
+
+INITIATIVE D6:
+1–3 enemies act first
+4–6 PCs act first
+individual: Agility + d6
+
+MELEE
+Test Strength DR12 to hit.
+SINGLE SHOT
+Test Presence DR12 to hit.
+AUTOFIRE
+Test Agility DR12 to hit,
+Hits allow another attack
+(to a maximum of three).
+DEFENSE
+Test Agility DR12
+to avoid an attack.
+DRONE COMBAT
+Test Knowledge DR12
+or flat d20 against DR12.
+
+CRIT (NATURAL 20)
+Attack: ×2 damage,
+armor is reduced one tier.
+Defense: Free attack.
+
+AFTER THE FIGHT
+Count bullets:
+Roll d8 (d6 if autofire)
+for each weapon fired.
+1–3: empty mag.
+Take a breather:
+Restore d4 HP.
+FUMBLE (NATURAL 1)
+Attack (d6):
+1–3 Out of ammo
+or drops weapon
+4–5 Misfire/Broken weapon 6 Weapon explodes,
+PC takes d6 damage
+Defense: ×2 damage,
+armor is reduced one tier.
+
+
+Injury AND DEATH
+
+BATTERED (0 HP) D8:
+1–2 Unconscious d4 rounds,
+awake with d4 HP.
+3–4 Presence DR10 +1 per
+cybertech. Unconcious
+on success, Cy-rage
+on failure.
+5–6 Unable to act for d4
+rounds, then active
+with d4 HP. Random
+body part is destroyed.
+7 Hemorrhage, death in
+d2 hours unless
+treated. All tests are
++4DR the first hour,
++6DR the last hour.
+8. Dead*.
+CY-RAGE
+Gain d8 HP. Attack random
+targets twice per round
+with the most effective
+weapon. Attacks are DR10.
+Defense DR14. Ends when
+Battered, Dead or sedated.
+
+*DEAD
+0 to −1 HP: if you have
+at least 1k
+¤ in your bank
+account, you have a 50%
+chance of being saved by an
+Emergency Response Team.
+Less HP than that:
+Add a zero to the bill for
+each negative HP after −1.
+Spend d6 days in intensive
+care for each negative HP.

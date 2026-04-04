@@ -76,6 +76,13 @@
                         <p class="version">V0:0:0b // &lt;CAN I HAVE MORE DRUGS?&gt;</p>
                     </header>
 
+                    <div class="tab-nav" role="tablist" aria-label="Main tabs">
+                        <button class="tab-btn active" data-tab-target="character-tab" role="tab" aria-selected="true">Character Sheet</button>
+                        <button class="tab-btn" data-tab-target="reference-tab" role="tab" aria-selected="false">Reference Sheet</button>
+                    </div>
+
+                    <div id="character-tab" class="tab-panel active" role="tabpanel">
+
                     <div class="character-info">
                         <h2 class="character-name">YOU ARE FLICK</h2>
                         <h3 class="character-class">ORPHANED GEARHEAD</h3>
@@ -180,6 +187,109 @@
                     <div class="actions">
                         <button class="btn-print">PRINT</button>
                         <button class="btn-reset">CLICK TO RESET</button>
+                    </div>
+
+                    </div>
+
+                    <div id="reference-tab" class="tab-panel" role="tabpanel" aria-hidden="true">
+                        <div class="reference-grid">
+                            <section class="reference-block">
+                                <h3>Abilities and tests</h3>
+                                <p><strong>Agility</strong> - Sneak, dodge, drive, autofire</p>
+                                <p><strong>Knowledge</strong> - Science, use tech or App</p>
+                                <p><strong>Presence</strong> - Snipe/shoot, use Nano, persuade</p>
+                                <p><strong>Strength</strong> - Strike, grapple, lift, throw</p>
+                                <p><strong>Toughness</strong> - Survive falling, poison and elements</p>
+                            </section>
+
+                            <section class="reference-block">
+                                <h3>Tests and DR</h3>
+                                <p>Roll d20 plus/minus ability. Equal to or greater than DR succeeds.</p>
+                                <p>Enemies usually do not roll. If needed, they roll flat d20 against DR.</p>
+                                <p><strong>DR 6</strong> simple | <strong>8</strong> routine | <strong>10</strong> easy</p>
+                                <p><strong>12</strong> normal | <strong>14</strong> difficult | <strong>16</strong> really hard</p>
+                                <p><strong>18</strong> almost impossible</p>
+                            </section>
+
+                            <section class="reference-block">
+                                <h3>Use Nano</h3>
+                                <p>Presence DR12. Failure: power fizzles and user takes d2 damage.</p>
+                                <p>Each Nano-use increases fumble risk by +1 for the day.</p>
+                            </section>
+
+                            <section class="reference-block">
+                                <h3>Infestations</h3>
+                                <p><strong>Linked to a Nano power:</strong> Trigger on fumble.</p>
+                                <p><strong>Not linked:</strong> Trigger after taking 5+ damage from one attack and failing Presence DR10.</p>
+                            </section>
+
+                            <section class="reference-block">
+                                <h3>Glitches</h3>
+                                <p><strong>Spendable points</strong></p>
+                                <ul>
+                                    <li>Deal maximum damage</li>
+                                    <li>Reroll a dice</li>
+                                    <li>Lower damage taken by d6</li>
+                                    <li>Neutralize a Crit or Fumble</li>
+                                    <li>Lower one test DR by -4 (before rolling)</li>
+                                </ul>
+                                <p>Regain d2 (or class die) each morning if all Glitches are depleted.</p>
+                            </section>
+
+                            <section class="reference-block">
+                                <h3>Rest</h3>
+                                <p>Short break: heal d4 HP.</p>
+                                <p>Eat, drink, sleep: heal d6 HP.</p>
+                            </section>
+
+                            <section class="reference-block">
+                                <h3>Use App and hacking</h3>
+                                <p>Knowledge DR12 while jacked into a Deck (+2 DR on all non-App actions).</p>
+                                <p>Fumble burns the App for the day and triggers Backlash.</p>
+                                <p>Each App-use raises fumble risk by +1 until next day.</p>
+                                <p>Non-App hacking is downtime with a cyberdeck. Test Knowledge to break into a node.</p>
+                                <p>Failure means discovered. Fumble triggers Backlash.</p>
+                            </section>
+
+                            <section class="reference-block">
+                                <h3>Combat quick rules</h3>
+                                <p><strong>Initiative d6:</strong> 1-3 enemies first, 4-6 PCs first. Individual: Agility + d6.</p>
+                                <p><strong>Melee:</strong> Strength DR12 to hit.</p>
+                                <p><strong>Single shot:</strong> Presence DR12 to hit.</p>
+                                <p><strong>Autofire:</strong> Agility DR12 to hit; each hit chains to another attack (max three).</p>
+                                <p><strong>Defense:</strong> Agility DR12 to avoid.</p>
+                                <p><strong>Drone combat:</strong> Knowledge DR12 or flat d20 against DR12.</p>
+                            </section>
+
+                            <section class="reference-block">
+                                <h3>Crit and fumble</h3>
+                                <p><strong>Crit (natural 20):</strong> Attack does x2 damage and drops armor one tier. Defense grants free attack.</p>
+                                <p><strong>Fumble (natural 1) attack d6:</strong> 1-3 out of ammo or drop weapon, 4-5 misfire/broken weapon, 6 weapon explodes and PC takes d6 damage.</p>
+                                <p><strong>Fumble defense:</strong> take x2 damage and armor drops one tier.</p>
+                            </section>
+
+                            <section class="reference-block">
+                                <h3>After the fight</h3>
+                                <p>Count bullets: roll d8 (or d6 if autofire) for each weapon fired. On 1-3, mag is empty.</p>
+                                <p>Take a breather: restore d4 HP.</p>
+                            </section>
+
+                            <section class="reference-block">
+                                <h3>Battered (0 HP) d8</h3>
+                                <p>1-2 Unconscious d4 rounds, wake with d4 HP.</p>
+                                <p>3-4 Presence DR10 (+1 per cybertech): unconscious on success, Cy-rage on failure.</p>
+                                <p>5-6 Cannot act d4 rounds, then active with d4 HP. Random body part destroyed.</p>
+                                <p>7 Hemorrhage, death in d2 hours unless treated (+4 DR first hour, +6 DR last hour).</p>
+                                <p>8 Dead.</p>
+                            </section>
+
+                            <section class="reference-block">
+                                <h3>Cy-rage and death</h3>
+                                <p><strong>Cy-rage:</strong> Gain d8 HP. Attack random targets twice/round with most effective weapon. Attack DR10, Defense DR14. Ends when Battered, Dead, or sedated.</p>
+                                <p><strong>Dead rules:</strong> At 0 to -1 HP and at least 1k in bank, 50% chance emergency team saves you.</p>
+                                <p>Below -1 HP: add a zero to bill for each negative HP after -1, then spend d6 days in intensive care for each negative HP.</p>
+                            </section>
+                        </div>
                     </div>
 
                     <footer class="footer">
