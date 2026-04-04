@@ -3,6 +3,7 @@
 
 import * as data from './data.js';
 import { getRandomConversation } from './chats.js';
+import {classDefaults} from "./data.js";
 
 // ========== UTILITY FUNCTIONS ==========
 
@@ -35,42 +36,32 @@ function getRandomItem(item) {
 
 // Roll a dice (e.g., "d6" returns 1-6, "2d10" returns 2-20)
 function rollDice(notation) {
-  const match = notation.match(/(\d+)?d(\d+)/);
-  if (!match) return 0;
+  const dice = notation.match(/(\d+)?d(\d+)/);
+  if (!dice) return 0;
 
-  const count = parseInt(match[1] || '1');
-  const sides = parseInt(match[2]);
+  const count = parseInt(dice[1] || '1');
+  const sides = parseInt(dice[2]);
 
   let total = 0;
   for (let i = 0; i < count; i++) {
     total += randomInt(1, sides);
   }
+
+  // IF there is a + or - in the notation, add that to the total
+  const modifierMatch = notation.match(/([+-]\d+)$/);
+  if (modifierMatch) {
+      total += parseInt(modifierMatch[1]);
+  }
   return total;
 }
 
-// ========== WEIGHTED RANDOM FUNCTIONS ==========
-
-// Weighted random selection - higher indices have lower probability
-// Uses exponential decay for probability distribution
-function weightedRandomByStrength(arr, decayFactor = 0.7) {
-  if (!arr || arr.length === 0) return null;
-  if (arr.length === 1) return arr[0];
-
-  // Create weights - each item has decayFactor^index probability
-  const weights = arr.map((_, index) => Math.pow(decayFactor, index));
-  const totalWeight = weights.reduce((sum, w) => sum + w, 0);
-
-  // Random selection based on weights
-  let random = Math.random() * totalWeight;
-
-  for (let i = 0; i < arr.length; i++) {
-    random -= weights[i];
-    if (random <= 0) {
-      return arr[i];
-    }
+function rollRandom(dice, tableObject) {
+  let roll = rollDice(dice);
+  let result = tableObject[roll -1];
+  if (result.variants && result.variants.length > 0) {
+    return randomElement(result.variants);
   }
-
-  return arr[arr.length - 1]; // Fallback
+  return result
 }
 
 // Chance function - returns true with 1-in-n probability
@@ -80,36 +71,127 @@ function oneInN(n) {
 
 // ========== STAT GENERATION ==========
 
-function generateStats() {
-  // Roll 4d4-4 for each stat, resulting in -4 to +12 range
-  const rollStat = () => {
-    const roll = rollDice('4d4') - 4;
-    // Format with + or - sign
-    if (roll >= 0) return `+${roll}`;
-    return `${roll}`;
-  };
-
-  return {
-    agility: rollStat(),
-    knowledge: rollStat(),
-    presence: rollStat(),
-    strength: rollStat(),
-    toughness: rollStat()
-  };
+function generateStats(characterClass) {
+  let statConverter = [-3, -3, -3, -3, -2, -2, -1, -1, 0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 3, 3]
+  let stats = {}
+  for (let stat of Object.keys(characterClass.stats)) {
+    const roll = rollDice(characterClass.stats[stat]);
+    stats[stat] = statConverter[roll - 1] || 0;
+  }
+  return stats
 }
 
 // ========== CHARACTER GENERATION ==========
+
+
+
+function rollNanomancer(nanomancer) {
+  let powerCount = 1
+  if (nanomancer.gear.cybertech.length > 0 || nanomancer.gear.apps.length > 0) {
+    powerCount = powerCount + nanomancer.gear.cybertech.length + nanomancer.gear.apps.length
+    nanomancer.gear.cybertech = []
+    nanomancer.gear.apps = []
+  }
+
+  for (let _ = 0; _ < powerCount; _++) {
+    {
+      const power = randomElement(data.nanoPowers);
+      const infestation = randomElement(data.nanoInfestations);
+      infestation.description = infestation.description + ". Linked to '" + power.name + "'"
+      nanomancer.gear.nanoPowers.push(power);
+      nanomancer.gear.nanoInfestations.push(infestation)
+      nanomancer.gear.all.push(power);
+      nanomancer.gear.all.push(infestation);
+    }
+  }
+}
+
+function rollHacker(hacker) {
+  let cyberdeck = {name: "Cyberdeck"}
+  let slots = hacker.stats.knowledge + 4
+  cyberdeck.description = slots + " slots."
+  hacker.gear.misc.push(cyberdeck);
+  hacker.gear.all.push(cyberdeck);
+  let app = randomElement(data.apps);
+  hacker.gear.apps.push(app);
+  hacker.gear.all.push(app);
+
+  let appCount = 1
+  if(hacker.gear.cybertech.length > 0 || hacker.gear.nanoPowers.length > 0) {
+    appCount = appCount + hacker.gear.cybertech.length + hacker.gear.nanoPowers.length
+    hacker.gear.cybertech = []
+    hacker.gear.nanoPowers = []
+  }
+
+  for(let _ = 0; _ < appCount; _++) {
+    const app = randomElement(data.apps);
+    hacker.gear.apps.push(app);
+    hacker.gear.all.push(app);
+  }
+}
+
+function rollGearhead(gearhead) {
+    const drones = [
+      {
+        name: "Semi-autonomous quad-bot",
+        description: "With tools including health scanner and torch. Has an attitude. Bites for d4, " + (gearhead.stats.knowledge + rollDice("1d8")) + " HP and -d2 armor"
+      },{
+        name: "Flying drone",
+        description: "Follows basic commands. " + (gearhead.stats.knowledge + rollDice("1d12"))+ " HP and one d8a assault rifle"
+      },{
+        name: "3 fly sized surveillance drones",
+        description: "Equipped with a camera, 3d scanner and heat sensor respectively. Very fragile"
+      },{
+        name: "Prototype crawler drone",
+        description: "With a laser turrent (d12a). " + (gearhead.stats.knowledge + rollDice("1d10")) + " HP, -d6 armor. Can follow advanced commands. Needs a hard reboot after dealing max damage"
+      },{
+        name: "Armored van",
+        description: "Five seats and lined with junk. Has a smuggler's hatch underneath it all. Once a day, test knowledge DR8 to find the spare part you need to fix any broken tech"
+      },{
+        name: "Walking weapons platform",
+        description: "Nigh-indestructible, large enough to ride and janky as hell. Anti-materiel battery (2d10) destroys most walls, doors and vehicles with a shot. Has a 2-in-6 chance of breaking down after firing. Takes d4 hours to repair"
+      }
+    ]
+    const drone = randomElement(drones);
+    gearhead.gear.misc.push(drone)
+    gearhead.gear.all.push(drone)
+
+}
+
+
+const classFunctionMap = {
+  "Shunned Nanomancer": rollNanomancer,
+  "Burned Hacker": rollHacker,
+  "Orphaned Gearhead": rollGearhead
+}
+
+
+function rollMags(weapon) {
+  if (weapon.tags && weapon.tags.includes("gun")) {
+    return rollDice("1d4");
+  }
+  return 0;
+}
+
 
 function generateCharacter() {
   // Basic Info
   const username = randomElement(data.usernames);
   const name = randomElement(data.names);
-  const characterClass = randomElement(data.classes);
+  const rolledClass = randomElement(data.classes);
+  const characterClass = {
+    ...classDefaults,
+    ...rolledClass,
+    stats: {
+      ...classDefaults.stats,
+      ...(rolledClass.stats || {})
+    }
+  };
 
   // Stats
-  const stats = generateStats();
-  const baseHp = rollDice('2d6');
-  const glitches = rollDice('1d4');
+  const stats = generateStats(characterClass);
+  const baseHp = rollDice(characterClass.hitPoints) + stats.toughness;
+  const glitches = rollDice(characterClass.glitches);
 
   // Appearance & Personality
   const style = getRandomItem(randomElement(data.styles));
@@ -123,70 +205,84 @@ function generateCharacter() {
   const debtor = randomElement(data.debtors || ['a debt buying corp', 'the Vamps', 'Cy Financial Group']);
 
   // Equipment - Weighted by strength (lower index = higher chance)
-  const weapon = weightedRandomByStrength(data.weapons, 0.7);
-  const armor = weightedRandomByStrength(data.armor, 0.75);
+  const weapon = rollRandom(characterClass.weapon, data.weapons);
+  const armor = rollRandom(characterClass.armor, data.armor);
+  const mags = rollMags(weapon)
 
-  // Gear
-  const gear = [];
+  // Gear buckets for export + rendering
+  const gear = {
+    weapon,
+    armor,
+    mags: mags,
+    credits: randomInt(0, 100),
+    misc: [],
+    cybertech: [],
+    nanoPowers: [],
+    nanoInfestations: [],
+    apps: [],
+    boosters: [],
+    all: []
+  };
+
+  function addGearItem(category, item) {
+    if (!gear[category]) {
+      gear[category] = [];
+    }
+    gear[category].push(item);
+    gear.all.push(item);
+  }
 
   // Basic gear (1-2 items)
   const numBasicGear = randomInt(1, 2);
   for (let i = 0; i < numBasicGear; i++) {
-    gear.push(randomElement(data.miscGear));
+    addGearItem('misc', randomElement(data.miscGear));
   }
 
   // Advanced gear (50% chance)
   if (oneInN(2)) {
-    gear.push(randomElement(data.advancedGear));
+    addGearItem('misc', randomElement(data.advancedGear));
   }
 
   // Cybertech (50% chance)
-  let hasCybertech = false;
-  if (oneInN(2)) {
-    const cyber = weightedRandomByStrength(data.cybertech, 0.7);
-    gear.push(cyber);
-    hasCybertech = true;
+  if (oneInN(6)) {
+    const cyber = rollRandom("1d12", data.cybertech);
+    addGearItem('cybertech', cyber);
   }
 
   // Nano power (50% chance)
   let hasNanoPower = false;
-  if (oneInN(2)) {
-    gear.push(randomElement(data.nanoPowers));
+  if (oneInN(10)) {
+    addGearItem('nanoPowers', randomElement(data.nanoPowers));
     hasNanoPower = true;
   }
-
-  // Nano infestation (1-in-5 normally, 1-in-2 if you have nano power)
-  if (hasNanoPower ? oneInN(2) : oneInN(5)) {
-    gear.push(randomElement(data.nanoInfestations));
+  if (hasNanoPower) {
+    addGearItem('nanoInfestations', randomElement(data.nanoInfestations));
   }
 
   // Booster ammo for guns (weighted)
   const hasGun = weapon.tags && weapon.tags.includes('gun');
   if (hasGun && oneInN(2)) {
-    gear.push(weightedRandomByStrength(data.boosters, 0.7));
+    addGearItem('boosters', randomElement(data.boosters));
   }
 
-  // Apps (if class is Burned Hacker or random chance)
-  if (characterClass.name === 'Burned Hacker' || oneInN(4)) {
+  // Apps
+  const hasDeck = gear.misc.some((item) => item.name && item.name.toLowerCase() === "cyberdeck")
+  if(hasDeck) {
     const numApps = randomInt(1, 3);
     for (let i = 0; i < numApps; i++) {
-      gear.push(randomElement(data.apps));
+      addGearItem('apps', randomElement(data.apps));
     }
   }
 
-  // Ammo
-  const mags = randomInt(2, 6);
-  const credits = randomInt(0, 100);
-
   // Calculate final HP (including cybertech bonuses)
   let finalHp = baseHp;
-  gear.forEach(item => {
+  gear.all.forEach(item => {
     if (item.bonusHp) {
       finalHp += item.bonusHp;
     }
   });
 
-  return {
+  let character = {
     username,
     name,
     fullName: `${username} ${name}`,
@@ -203,12 +299,14 @@ function generateCharacter() {
       amount: debt,
       debtor
     },
-    weapon,
-    armor,
-    gear,
-    mags,
-    credits
+    gear
   };
+
+  if (characterClass.name in classFunctionMap) {
+    classFunctionMap[characterClass.name](character)
+  }
+
+  return character
 }
 
 // ========== DISPLAY FUNCTIONS ==========
@@ -260,21 +358,22 @@ function displayCharacter(character) {
 
   console.log('--- ITEMS ---');
 
-  const weapon = formatGearItem(character.weapon);
+  const weapon = formatGearItem(character.gear.weapon);
   console.log(`Weapon: ${weapon.name}`);
   if (weapon.description) {
     console.log(`  ${weapon.description}`);
   }
 
-  const armor = formatGearItem(character.armor);
+  const armor = formatGearItem(character.gear.armor);
   console.log(`Armor: ${armor.name}`);
   if (armor.description) {
     console.log(`  ${armor.description}`);
   }
 
-  if (character.gear.length > 0) {
+  const allGear = character.gear.all;
+  if (allGear.length > 0) {
     console.log('\nAdditional Gear:');
-    character.gear.forEach(item => {
+    allGear.forEach(item => {
       const gearItem = formatGearItem(item);
       console.log(`  - ${gearItem.name}`);
       if (gearItem.description) {
@@ -283,11 +382,13 @@ function displayCharacter(character) {
     });
   }
 
-  if (character.mags > 0) {
-    console.log(`\nAmmo: ${character.mags} mags`);
+  const mags = character.gear.mags;
+  if (mags > 0) {
+    console.log(`\nAmmo: ${mags} mags`);
   }
 
-  console.log(`Credits: ${character.credits}¤`);
+  const credits = character.gear.credits;
+  console.log(`Credits: ${credits}¤`);
 
   console.log('\n==============================================\n');
 }
@@ -394,30 +495,33 @@ function updateHTMLCharacter(character) {
     existingItems.forEach(item => item.remove());
 
     // Add weapon
-    const weapon = formatGearItem(character.weapon);
+    const weapon = formatGearItem(character.gear.weapon);
     const weaponTags = weapon.tags || ['weapon'];
     addGearItemWithDesc(gearSection, weapon.name, weapon.description, weaponTags);
 
     // Add armor
-    if (character.armor.name !== 'No armor') {
-      const armor = formatGearItem(character.armor);
+    const armorSource = character.gear.armor;
+    if (armorSource?.name !== 'No armor') {
+      const armor = formatGearItem(armorSource);
       const armorTags = armor.tags || ['armor'];
       addGearItemWithDesc(gearSection, armor.name, armor.description, armorTags);
     }
 
     // Add all other gear
-    character.gear.forEach(item => {
+    const allGear = character.gear.all;
+    allGear.forEach(item => {
       const gearItem = formatGearItem(item);
       addGearItemWithDesc(gearSection, gearItem.name, gearItem.description, gearItem.tags);
     });
 
-    // Add mags with clickable icons
-    if (character.mags > 0) {
-      addMagsItem(gearSection, character.mags);
+    const mags = character.gear.mags;
+    if (mags > 0) {
+      addMagsItem(gearSection, mags);
     }
 
     // Add editable credits
-    addCreditsItem(gearSection, character.credits);
+    const credits = character.gear.credits;
+    addCreditsItem(gearSection, credits);
   }
 }
 
@@ -568,7 +672,7 @@ export {
   randomElement,
   randomInt,
   rollDice,
-  weightedRandomByStrength,
+  rollRandom,
   oneInN
 };
 
