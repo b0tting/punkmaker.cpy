@@ -321,6 +321,7 @@ function generateCharacter() {
       finalHp += numericBonus;
     }
   });
+  finalHp = Math.max(3, finalHp);
 
   const rolledGlitches = rollDice(characterClass.glitches);
 
