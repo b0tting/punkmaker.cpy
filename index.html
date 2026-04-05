@@ -10,7 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://use.typekit.net/syd3vhy.css">
     <link rel="stylesheet" href="styles.css">
-    <script type="module" src="chats.js"></script>
     <script type="module" src="generator.js"></script>
 </head>
 <body>
@@ -38,7 +37,15 @@
                         </div>
 
                         <div class="chat-log">
-                            <!-- Chat lines will be populated by JavaScript -->
+                            <div
+                                v-for="(line, index) in chatLines"
+                                :key="line.id"
+                                class="chat-line"
+                                :class="line.lineClass"
+                                :style="{ animationDelay: `${index * 1.1}s` }"
+                            >
+                                <span>{{ line.text }}</span><span v-if="line.showCursor" class="cursor">█</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -77,121 +84,186 @@
                     </header>
 
                     <div class="tab-nav" role="tablist" aria-label="Main tabs">
-                        <button class="tab-btn active" data-tab-target="character-tab" role="tab" aria-selected="true">Character Sheet</button>
-                        <button class="tab-btn" data-tab-target="reference-tab" role="tab" aria-selected="false">Reference Sheet</button>
+                        <button
+                            class="tab-btn"
+                            data-tab-target="character-tab"
+                            role="tab"
+                            :class="{ active: activeTab === 'character-tab' }"
+                            :aria-selected="String(activeTab === 'character-tab')"
+                            @click="setActiveTab('character-tab')"
+                        >Character Sheet</button>
+                        <button
+                            class="tab-btn"
+                            data-tab-target="reference-tab"
+                            role="tab"
+                            :class="{ active: activeTab === 'reference-tab' }"
+                            :aria-selected="String(activeTab === 'reference-tab')"
+                            @click="setActiveTab('reference-tab')"
+                        >Reference Sheet</button>
+                        <button class="btn-reset tab-reset-btn" @click="resetCharacter" title="Generate a new character">RESET</button>
                     </div>
 
-                    <div id="character-tab" class="tab-panel active" role="tabpanel">
+                    <div id="character-tab" class="tab-panel" role="tabpanel" :class="{ active: activeTab === 'character-tab' }" :aria-hidden="String(activeTab !== 'character-tab')">
 
                     <div class="character-info">
-                        <h2 class="character-name">YOU ARE FLICK</h2>
-                        <h3 class="character-class">ORPHANED GEARHEAD</h3>
-                        <h4 class="character-glitch">SENTRY GOING UP</h4>
-                        <p class="glitch-description">You test Knowledge DR10 when you try to repair a piece of tech or to pilot a vehicle, drone or other machine.</p>
+                        <h2 class="character-name">YOU ARE {{ character.fullName.toUpperCase() }}</h2>
+                        <h3 class="character-class">{{ character.class.name.toUpperCase() }}</h3>
+                        <h4 class="character-glitch">{{ character.class.glitch }}</h4>
+                        <p class="glitch-description">{{ character.class.additional?.regular || '' }}</p>
 
-                        <p class="debt-info">You owe 13,000¤ to a debt buying corp; all guns and no scruples.</p>
+                        <p class="debt-info">You owe {{ character.debt.amount.toLocaleString() }}¤ to {{ character.debt.debtor }}.</p>
 
-                        <p class="class-description">People are unreliable. Socially. Physically. Emotionally. Weak bodies and weaker wills. They are worn down, unfixable. Instead, you have mastered emotionless steel and loyal code. You can fix, drive and pilot any machine. Machines, you can trust.</p>
+                        <p class="class-description">{{ character.class.description || '' }}</p>
                     </div>
 
                     <!-- HP Panel -->
-                    <div class="hp-panel">
+                    <div class="hp-panel" :class="{ dead: hpIsDead }">
                         <div class="hp-skull">☠</div>
                         <div class="hp-content">
                             <div class="hp-label">HIT POINTS</div>
                             <div class="hp-display">
-                                <button class="hp-btn hp-minus" aria-label="Decrease HP">−</button>
+                                <button class="hp-btn hp-minus" aria-label="Decrease HP" @click="decreaseHP">−</button>
                                 <div class="hp-values">
-                                    <span class="hp-current">12</span>
+                                    <span class="hp-current">{{ character.currentHp }}</span>
                                     <span class="hp-separator">/</span>
-                                    <span class="hp-max">12</span>
+                                    <span class="hp-max">{{ character.maxHp }}</span>
                                 </div>
-                                <button class="hp-btn hp-plus" aria-label="Increase HP">+</button>
+                                <button class="hp-btn hp-plus" aria-label="Increase HP" @click="increaseHP">+</button>
                             </div>
                         </div>
                     </div>
 
                     <div class="stats-section">
-                        <div class="stat-item">
-                            <span class="stat-label">Agility</span>
-                            <span class="stat-value">-1</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Knowledge</span>
-                            <span class="stat-value">+2</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Presence</span>
-                            <span class="stat-value">0</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Strength</span>
-                            <span class="stat-value">+1</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Toughness</span>
-                            <span class="stat-value">+1</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Glitches</span>
-                            <span class="stat-value">2</span>
+                        <div v-for="entry in statEntries" :key="entry[0]" class="stat-item stat-item-clickable" @click="openDiceRollModal(entry[0], entry[1])">
+                            <span class="stat-label">{{ entry[0] }}</span>
+                            <span class="stat-value">{{ formatStat(entry[1]) }}</span>
                         </div>
                     </div>
 
                     <div class="gear-section">
                         <div class="gear-header">
                             <h3 class="gear-title">ITEMS</h3>
-                            <button class="add-item-btn" title="Add custom item">+</button>
+                            <button class="add-item-btn" title="Add item" @click="openAddItemModal">+</button>
                         </div>
 
-                        <div class="gear-item">
-                            <strong>Old-school motorcycle</strong>
-                            <p>(Fuel is hard to come by.)</p>
-                        </div>
-
-                        <div class="gear-item">
-                            <strong>Drone suit</strong>
-                            <p>(Slow but quiet flight. Attack and defense tests are +4DR while flying.)</p>
-                        </div>
-
-                        <div class="gear-item">
-                            <strong>2 small SMGs</strong>
-                            <p>, d6a damage (Only autofire.)</p>
-                        </div>
-
-                        <div class="gear-item">
-                            <strong>4 mags</strong>
-                            <p>60¤, 30m</p>
-                        </div>
-
-                        <div class="gear-item">
-                            <strong>Paracord</strong>
-                            <p>(d4)</p>
-                        </div>
-
-                        <div class="gear-item">
-                            <strong>StyleGuard</strong>
-                            <p>, -d2 damage (Looks just like clothes!)</p>
-                        </div>
-
-                        <div class="gear-item">
-                            <strong>A kill mode</strong>
-                            <p>Walking weapons platform</p>
-                        </div>
-
-                        <div class="gear-item">
-                            <strong>6/6</strong>
+                        <div
+                            v-for="item in displayGearItems"
+                            :key="item.id"
+                            class="gear-item"
+                            :class="{ 'gear-item-clickable': item.canEdit }"
+                            @click="openDescriptionModal(item)"
+                        >
+                            <strong>
+                                <span class="gear-item-name">{{ item.name }}</span>
+                                <span class="gear-item-tag">[{{ item.category }}]</span>
+                            </strong>
+                            <p v-if="item.category === 'ammo'" class="mags-container">
+                                <span
+                                    v-for="mag in item.magsCount"
+                                    :key="`mag-${mag}`"
+                                    class="mag-icon"
+                                    title="Click to use/remove mag"
+                                    @click.stop="removeMag"
+                                ></span>
+                                <button class="mag-add-btn" title="Add magazine" @click.stop="addMag">+</button>
+                            </p>
+                            <p v-else-if="item.category === 'credits'" class="mags-container">
+                                <button class="mag-add-btn" title="Remove credits" @click.stop="removeCredits">-</button>
+                                <span class="mags-label">{{ item.creditsAmount }}¤</span>
+                                <button class="mag-add-btn" title="Add credits" @click.stop="addCredits">+</button>
+                            </p>
+                            <p v-else-if="item.description">{{ item.description }}</p>
                         </div>
                     </div>
 
                     <div class="actions">
-                        <button class="btn-print">PRINT</button>
-                        <button class="btn-reset">CLICK TO RESET</button>
+                        <button class="btn-print" @click="printSheet">PRINT</button>
+                        <button class="btn-reset" @click="resetCharacter">CLICK TO RESET</button>
+                    </div>
+
+                    <div v-if="addItemModalOpen" class="modal active" @click.self="closeAddItemModal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <span class="modal-title">ADD NEW ITEM</span>
+                                <button class="modal-close-add" aria-label="Close" @click="closeAddItemModal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="vueItemTitle" class="form-label">TITLE</label>
+                                    <input id="vueItemTitle" type="text" class="form-input" v-model="addItemForm.title" placeholder="Enter item name...">
+                                </div>
+                                <div class="form-group">
+                                    <label for="vueItemType" class="form-label">CATEGORY</label>
+                                    <select id="vueItemType" class="form-select" v-model="addItemForm.category">
+                                        <option value="misc">Gear</option>
+                                        <option value="weapon">Weapon</option>
+                                        <option value="armor">Armor</option>
+                                        <option value="cybertech">Cybertech</option>
+                                        <option value="nanoPowers">Nano Power</option>
+                                        <option value="nanoInfestations">Nano Infestation</option>
+                                        <option value="apps">App</option>
+                                        <option value="boosters">Booster</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="vueItemDescription" class="form-label">DESCRIPTION</label>
+                                    <textarea id="vueItemDescription" class="form-textarea" v-model="addItemForm.description" placeholder="Enter item description..."></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="modal-btn modal-btn-cancel-add" @click="closeAddItemModal">CANCEL</button>
+                                <button class="modal-btn modal-btn-add" @click="submitAddItem">ADD ITEM</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div v-if="descriptionModalOpen" class="modal active" @click.self="closeDescriptionModal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <span class="modal-title">EDIT DESCRIPTION</span>
+                                <button class="modal-close" aria-label="Close" @click="closeDescriptionModal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <p class="form-label" style="margin-bottom: 10px;">{{ descriptionModalItem?.name }}</p>
+                                <textarea class="modal-textarea" v-model="descriptionDraft" placeholder="Enter item description..."></textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="modal-btn modal-btn-delete" @click="deleteDescriptionModalItem">DELETE</button>
+                                <button class="modal-btn modal-btn-cancel" @click="closeDescriptionModal">CANCEL</button>
+                                <button class="modal-btn modal-btn-save" @click="saveDescriptionModal">SAVE</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div v-if="diceRollModalOpen" class="modal active" @click.self="closeDiceRollModal">
+                        <div class="modal-content dice-modal-content">
+                            <div class="modal-header">
+                                <span class="modal-title">{{ diceRollModalAbility }}</span>
+                                <button class="modal-close" aria-label="Close" @click="closeDiceRollModal">&times;</button>
+                            </div>
+                            <div class="modal-body dice-modal-body">
+                                <div class="dice-roll-display">
+                                    <div v-if="diceRollIsAnimating" class="dice-roll-glitch">
+                                        {{ diceRollGlitchValue }}
+                                    </div>
+                                    <div v-else-if="diceRollResult === 'fumble'" class="dice-roll-fumble">
+                                        FUMBLE
+                                    </div>
+                                    <div v-else-if="diceRollResult === 'critical'" class="dice-roll-critical">
+                                        CRITICAL SUCCESS
+                                    </div>
+                                    <div v-else class="dice-roll-result">
+                                        <div v-if="diceRollModifier === 0" class="dice-roll-equation">{{ diceRollRawValue }}</div>
+                                        <div v-else class="dice-roll-equation">{{ diceRollRawValue }} {{ diceRollModifier >= 0 ? '+ ' + diceRollModifier : '- ' + Math.abs(diceRollModifier) }} = <span class="dice-roll-total">{{ diceRollTotal }}</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     </div>
 
-                    <div id="reference-tab" class="tab-panel" role="tabpanel" aria-hidden="true">
+                    <div id="reference-tab" class="tab-panel" role="tabpanel" :class="{ active: activeTab === 'reference-tab' }" :aria-hidden="String(activeTab !== 'reference-tab')">
                         <div class="reference-grid">
                             <section class="reference-block">
                                 <h3>Abilities and tests</h3>
@@ -301,62 +373,5 @@
         </div>
     </div>
 
-    <!-- Edit Modal -->
-    <div id="editModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="modal-title">EDIT TEXT</span>
-                <button class="modal-close" aria-label="Close">&times;</button>
-            </div>
-            <div class="modal-body">
-                <textarea id="editTextarea" class="modal-textarea"></textarea>
-            </div>
-            <div class="modal-footer">
-                <button class="modal-btn modal-btn-delete">DELETE</button>
-                <div class="modal-footer-right">
-                    <button class="modal-btn modal-btn-cancel">CANCEL</button>
-                    <button class="modal-btn modal-btn-save">SAVE</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Add Item Modal -->
-    <div id="addItemModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="modal-title">ADD NEW ITEM</span>
-                <button class="modal-close-add" aria-label="Close">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="itemTitle" class="form-label">ITEM NAME</label>
-                    <input type="text" id="itemTitle" class="form-input" placeholder="Enter item name...">
-                </div>
-                <div class="form-group">
-                    <label for="itemType" class="form-label">TYPE</label>
-                    <select id="itemType" class="form-select">
-                        <option value="gear">Gear</option>
-                        <option value="weapon">Weapon</option>
-                        <option value="armor">Armor</option>
-                        <option value="cybertech">Cybertech</option>
-                        <option value="nano">Nano</option>
-                        <option value="app">App</option>
-                        <option value="booster">Booster</option>
-                        <option value="drug">Drug</option>
-                        <option value="custom">Custom</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="itemDescription" class="form-label">DESCRIPTION</label>
-                    <textarea id="itemDescription" class="form-textarea" placeholder="Enter item description..."></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="modal-btn modal-btn-cancel-add">CANCEL</button>
-                <button class="modal-btn modal-btn-add">ADD ITEM</button>
-            </div>
-        </div>
-    </div>
 </body>
 </html>

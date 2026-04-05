@@ -1,8 +1,21 @@
-# CY_BORG PUNKMAKER - Static Version
+# CY_BORG PUNKMAKER - Vue Version
 
-A character generator for the CY_BORG universe, originally created by Karl Druid. 
+A character generator for the CY_BORG universe, originally created by Karl Druid.
 
-Items, gear, hitpoints are interactive so that this app can be used during play. 
+The app now uses Vue two-way data binding with a reactive `character` object as the source of truth.
+
+## Character and gear model
+
+- `character` is fully reactive (name, class, HP, stats, debt).
+- `character.gear` is organized into explicit buckets:
+  - `weapon`, `armor`, `mags`, `credits`
+  - `cybertech`, `nanoPowers`, `nanoInfestations`, `apps`, `boosters`, `misc`
+  - `all` (derived from the bucket lists)
+- Editing item name, description, tags, mags, and credits updates the underlying object directly.
+
+## Run locally
+
+Serve the folder with any static file server and open `index.html` in your browser.
 
 
 
