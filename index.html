@@ -133,6 +133,27 @@
                         </div>
                     </div>
 
+                    <!-- Glitches Panel -->
+                    <div class="glitches-panel">
+                        <div class="glitches-icon">⚙</div>
+                        <div class="glitches-content">
+                            <div class="glitches-label">GLITCHES</div>
+                            <div class="glitches-display">
+                                <div class="glitches-icons">
+                                    <span
+                                        v-for="n in character.maxGlitches"
+                                        :key="`glitch-${n}`"
+                                        class="glitch-dot"
+                                        :class="{ 'glitch-dot-spent': n > character.currentGlitches }"
+                                        :title="n <= character.currentGlitches ? 'Click to spend glitch' : 'Spent'"
+                                        @click="n <= character.currentGlitches && spendGlitch()"
+                                    >⚙</span>
+                                </div>
+                                <button class="glitches-btn" aria-label="Restore Glitch" title="Restore glitch" @click="addGlitch" :disabled="character.currentGlitches >= character.maxGlitches">+</button>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="stats-section">
                         <div v-for="entry in statEntries" :key="entry[0]" class="stat-item stat-item-clickable" @click="openDiceRollModal(entry[0], entry[1])">
                             <span class="stat-label">{{ entry[0] }}</span>

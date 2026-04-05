@@ -322,6 +322,8 @@ function generateCharacter() {
     }
   });
 
+  const rolledGlitches = rollDice(characterClass.glitches);
+
   const character = {
     username,
     name,
@@ -330,7 +332,8 @@ function generateCharacter() {
     stats,
     maxHp: finalHp,
     currentHp: finalHp,
-    glitches: rollDice(characterClass.glitches),
+    maxGlitches: rolledGlitches,
+    currentGlitches: rolledGlitches,
     style: getRandomItem(randomElement(data.styles)),
     feature: getRandomItem(randomElement(data.features)),
     quirk: getRandomItem(randomElement(data.quirks)),
@@ -512,6 +515,12 @@ async function initVueApp() {
       if (!character) {
         character = generateCharacter();
       }
+      // Migrate old character format: glitches → maxGlitches/currentGlitches
+      if (character.glitches !== undefined && character.maxGlitches === undefined) {
+        character.maxGlitches = character.glitches;
+        character.currentGlitches = character.glitches;
+        delete character.glitches;
+      }
       return {
         activeTab: 'character-tab',
         character,
@@ -547,8 +556,7 @@ async function initVueApp() {
           ['Knowledge', this.character.stats.knowledge],
           ['Presence', this.character.stats.presence],
           ['Strength', this.character.stats.strength],
-          ['Toughness', this.character.stats.toughness],
-          ['Glitches', this.character.glitches]
+          ['Toughness', this.character.stats.toughness]
         ];
       },
       gearSections() {
@@ -804,6 +812,18 @@ async function initVueApp() {
       decreaseHP() {
         this.character.currentHp -= 1;
         this.saveCharacterToStorage();
+      },
+      addGlitch() {
+        if (this.character.currentGlitches < this.character.maxGlitches) {
+          this.character.currentGlitches += 1;
+          this.saveCharacterToStorage();
+        }
+      },
+      spendGlitch() {
+        if (this.character.currentGlitches > 0) {
+          this.character.currentGlitches -= 1;
+          this.saveCharacterToStorage();
+        }
       },
       formatStat(value) {
         return value > 0 ? `+${value}` : `${value}`;

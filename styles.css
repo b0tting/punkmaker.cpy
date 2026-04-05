@@ -633,6 +633,188 @@ body {
     color: var(--color-cyan);
 }
 
+.glitches-panel {
+    position: relative;
+    margin-bottom: 40px;
+    padding: 25px 30px;
+    border-top: 3px solid var(--color-cyan);
+    border-left: 3px solid var(--color-cyan);
+    border-right: 3px solid var(--color-primary);
+    border-bottom: 3px solid var(--color-primary);
+    background-color: var(--color-bg-medium);
+    box-shadow:
+        -5px -5px 20px rgba(91, 186, 213, 0.3),
+        5px 5px 20px rgba(0, 0, 251, 0.3);
+    overflow: hidden;
+}
+
+.glitches-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 80px;
+    opacity: 0.05;
+    pointer-events: none;
+    z-index: 1;
+    animation: glitch-rotate 8s linear infinite;
+}
+
+@keyframes glitch-rotate {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+.glitches-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.glitches-label {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--color-cyan);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.glitches-display {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+    justify-content: flex-end;
+}
+
+.glitches-icons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.glitch-dot {
+    font-size: 28px;
+    color: var(--color-cyan);
+    text-shadow:
+        0 0 6px var(--color-cyan),
+        0 0 20px var(--color-cyan),
+        0 0 50px var(--color-cyan),
+        0 0 100px rgba(91, 186, 213, 0.6);
+    animation: glitch-flicker-dot 2.4s infinite;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border: 2px solid var(--color-cyan);
+    box-shadow: 0 0 10px rgba(91, 186, 213, 0.4), inset 0 0 10px rgba(91, 186, 213, 0.1);
+    flex-shrink: 0;
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.glitch-dot:hover {
+    transform: scale(1.1);
+    border-color: var(--color-cyan);
+    box-shadow: 0 0 20px rgba(91, 186, 213, 0.8), inset 0 0 20px rgba(91, 186, 213, 0.2);
+    text-shadow:
+        0 0 6px var(--color-cyan),
+        0 0 20px var(--color-cyan),
+        0 0 60px var(--color-cyan),
+        0 0 120px rgba(91, 186, 213, 0.8);
+}
+
+.glitch-dot-spent {
+    color: rgba(91, 186, 213, 0.15);
+    text-shadow: none;
+    border-color: rgba(91, 186, 213, 0.15);
+    box-shadow: none;
+    animation: none;
+    cursor: default;
+}
+
+.glitch-dot-spent:hover {
+    transform: none;
+    text-shadow: none;
+    box-shadow: none;
+}
+
+@keyframes glitch-flicker-dot {
+    0%, 94%, 96%, 100% {
+        color: var(--color-cyan);
+        text-shadow:
+            0 0 6px var(--color-cyan),
+            0 0 20px var(--color-cyan),
+            0 0 50px var(--color-cyan),
+            0 0 100px rgba(91, 186, 213, 0.6);
+    }
+    95% {
+        color: var(--color-pink);
+        text-shadow:
+            0 0 6px var(--color-pink),
+            0 0 20px var(--color-pink),
+            0 0 60px var(--color-pink),
+            0 0 120px rgba(255, 0, 255, 0.8),
+            0 0 200px rgba(255, 0, 255, 0.4);
+    }
+}
+
+.glitches-btn {
+    width: 50px;
+    height: 50px;
+    border: 2px solid var(--color-cyan);
+    background-color: var(--color-black);
+    color: var(--color-cyan);
+    font-size: 32px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    padding: 0;
+}
+
+.glitches-btn:hover:not(:disabled) {
+    background-color: var(--color-cyan);
+    color: var(--color-black);
+    box-shadow: 0 0 20px var(--color-cyan);
+    transform: scale(1.1);
+}
+
+.glitches-btn:active:not(:disabled) {
+    transform: scale(0.95);
+}
+
+.glitches-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.glitches-counter {
+    font-family: var(--font-display);
+    font-size: 24px;
+    color: var(--color-cyan);
+    text-shadow: 0 0 10px var(--color-cyan);
+    min-width: 80px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
 .stats-section {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
