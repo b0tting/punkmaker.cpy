@@ -33,6 +33,15 @@ export const classDefaults = {
     armor: "1d3"
 }
 
+export const debtors = [
+    "to a small group of vampires",
+    "to a greasy debt buying corp",
+    "to UCS for a lawsuit on property damages",
+    "in black loans to the cyberthugs that sold you your bike",
+    "to a street gang",
+    "to the Mediker for an organ transplant"
+]
+
 export const classes = [
     {
         name: "Orphaned Gearhead",

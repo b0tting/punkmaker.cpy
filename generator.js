@@ -341,8 +341,8 @@ function generateCharacter() {
     obsession: getRandomItem(randomElement(data.obsessions)),
     want: getRandomItem(randomElement(data.wants)),
     debt: {
-      amount: randomInt(1, 6) * 1000,
-      debtor: randomElement(data.debtors || ['a debt buying corp', 'the Vamps', 'Cy Financial Group'])
+      amount: randomInt(1, 2) === 1 ? randomInt(1, 6) * 1000 : 2000 + randomInt(1, 1000),
+      debtor: randomElement(data.debtors || randomElement(data.debtors) )
     },
     gear
   };

@@ -18,9 +18,19 @@
     --font-display: 'chainprinter', sans-serif;
 }
 
+html,
+body {
+    min-height: 100%;
+}
+
 body {
     font-family: var(--font-main);
     background-color: var(--color-black);
+    background-image: url('background.png');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: scroll;
     color: var(--color-white);
     overflow-x: hidden;
     line-height: 1.8;
@@ -44,7 +54,7 @@ body {
 
 /* Terminal Section (Left Side) */
 #TERMINAL {
-    background-color: var(--color-black);
+    background-color: rgba(0, 0, 0, 0.8);
     border-right: 2px solid var(--color-primary);
     padding: 20px;
     width: 300px;
@@ -182,13 +192,7 @@ body {
 
 /* Background Section (Center/Right) */
 #BACKGROUND {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    height: 100%;
-    z-index: 1;
-    pointer-events: none;
+    display: none;
 }
 
 .navigation {
@@ -338,7 +342,7 @@ body {
     border-left: 2px solid var(--color-pink);
     border-right: 2px solid var(--color-primary);
     border-bottom: 2px solid var(--color-primary);
-    background-color: var(--color-bg-medium);
+    background-color: rgba(26, 26, 26, 0.9);
     box-shadow:
         -3px -3px 14px rgba(255, 0, 255, 0.25),
         3px 3px 14px rgba(0, 0, 251, 0.25);
@@ -438,7 +442,7 @@ body {
     margin-bottom: 40px;
     padding: 25px;
     border: 2px solid var(--color-pink);
-    background-color: var(--color-bg-medium);
+    background-color: rgba(26, 26, 26, 0.9);
     box-shadow:
         0 0 20px rgba(255, 0, 255, 0.4),
         0 0 40px rgba(255, 0, 255, 0.2),
@@ -508,7 +512,7 @@ body {
     border-left: 3px solid var(--color-pink);
     border-right: 3px solid var(--color-primary);
     border-bottom: 3px solid var(--color-primary);
-    background-color: var(--color-bg-medium);
+    background-color: rgba(26, 26, 26, 0.9);
     box-shadow:
         -5px -5px 20px rgba(255, 0, 255, 0.3),
         5px 5px 20px rgba(0, 0, 251, 0.3);
@@ -641,7 +645,7 @@ body {
     border-left: 3px solid var(--color-cyan);
     border-right: 3px solid var(--color-primary);
     border-bottom: 3px solid var(--color-primary);
-    background-color: var(--color-bg-medium);
+    background-color: rgba(26, 26, 26, 0.9);
     box-shadow:
         -5px -5px 20px rgba(91, 186, 213, 0.3),
         5px 5px 20px rgba(0, 0, 251, 0.3);
@@ -828,7 +832,7 @@ body {
     align-items: center;
     padding: 15px 20px;
     border: 1px solid var(--color-primary);
-    background-color: var(--color-bg-medium);
+    background-color: rgba(26, 26, 26, 0.9);
     box-shadow:
         0 0 15px rgba(0, 0, 251, 0.3),
         0 0 30px rgba(0, 0, 251, 0.1),
@@ -872,7 +876,7 @@ body {
     margin-bottom: 40px;
     padding: 30px;
     border: 2px solid var(--color-cyan);
-    background-color: var(--color-bg-medium);
+    background-color: rgba(26, 26, 26, 0.9);
     box-shadow:
         0 0 20px rgba(91, 186, 213, 0.4),
         0 0 40px rgba(91, 186, 213, 0.2),
@@ -1847,5 +1851,28 @@ body {
 
     .form-textarea {
         min-height: 150px;
+    }
+}
+
+@media print {
+    #TERMINAL,
+    #BACKGROUND,
+    .tab-nav,
+    .actions,
+    .modal,
+    button {
+        display: none !important;
+    }
+
+    .layout-wrapper,
+    .main-wrapper {
+        display: block;
+        min-height: auto;
+    }
+
+    #CONTENT {
+        max-width: none;
+        width: 100%;
+        padding: 0;
     }
 }
