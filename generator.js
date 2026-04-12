@@ -8,8 +8,33 @@ import { classDefaults } from './data.js';
 // ========== UTILITY FUNCTIONS ==========
 
 // Get random element from array
-function randomElement(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
+function randomElement(arr, currentElements = [], categoryName = '') {
+  if (!Array.isArray(arr) || arr.length === 0) {
+    return undefined;
+  }
+
+  if (!Array.isArray(currentElements) || currentElements.length === 0) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  const toComparableName = (value) => {
+    if (!value) return '';
+    if (typeof value === 'string') return value.trim().toLowerCase();
+    if (typeof value === 'object' && typeof value.name === 'string') {
+      return value.name.trim().toLowerCase();
+    }
+    return '';
+  };
+
+  const currentNames = new Set(currentElements.map(toComparableName).filter(Boolean));
+  const available = arr.filter((item) => !currentNames.has(toComparableName(item)));
+
+  if (available.length === 0) {
+    console.log(`No unique items left in category '${categoryName || 'unknown'}'. Skipping add.`);
+    return undefined;
+  }
+
+  return available[Math.floor(Math.random() * available.length)];
 }
 
 // Get random integer between min and max (inclusive)
@@ -150,8 +175,19 @@ function rollNanomancer(character) {
   let powerCount = 1 + clearAndCountGear(character, ['cybertech', 'apps']);
 
   for (let i = 0; i < powerCount; i++) {
-    const power = normalizeGearItem(randomElement(data.nanoPowers), ['nano']);
-    const infestationSource = normalizeGearItem(randomElement(data.nanoInfestations), ['nanoInfestation']);
+    const powerSource = randomElement(data.nanoPowers, character.gear.nanoPowers, 'nanoPowers');
+    const infestationSourceRaw = randomElement(
+      data.nanoInfestations,
+      character.gear.nanoInfestations,
+      'nanoInfestations'
+    );
+
+    if (!powerSource || !infestationSourceRaw) {
+      continue;
+    }
+
+    const power = normalizeGearItem(powerSource, ['nano']);
+    const infestationSource = normalizeGearItem(infestationSourceRaw, ['nanoInfestation']);
 
     infestationSource.description = `${infestationSource.description}. Linked to '${power.name}'`;
 
@@ -175,14 +211,21 @@ function clearAndCountGear(character, categoriesToClear) {
 function rollHacker(character) {
   const slots = character.stats.knowledge + 4;
   character.gear.misc.push(normalizeGearItem({ name: 'Cyberdeck', description: `${slots} slots.` }, ['deck']));
-  character.gear.apps.push(normalizeGearItem(randomElement(data.apps), ['app']));
+
+  const firstApp = randomElement(data.apps, character.gear.apps, 'apps');
+  if (firstApp) {
+    character.gear.apps.push(normalizeGearItem(firstApp, ['app']));
+  }
 
   let appCount = 1;
   const convertedCount = clearAndCountGear(character, ['cybertech', 'nanoPowers']);
   appCount += convertedCount;
 
   for (let i = 0; i < appCount; i++) {
-    character.gear.apps.push(normalizeGearItem(randomElement(data.apps), ['app']));
+    const app = randomElement(data.apps, character.gear.apps, 'apps');
+    if (app) {
+      character.gear.apps.push(normalizeGearItem(app, ['app']));
+    }
   }
 
   syncGearAll(character);
@@ -217,7 +260,10 @@ function rollGearhead(character) {
     }
   ];
 
-  character.gear.misc.push(normalizeGearItem(randomElement(drones), ['drone']));
+  const drone = randomElement(drones, character.gear.misc, 'misc');
+  if (drone) {
+    character.gear.misc.push(normalizeGearItem(drone, ['drone']));
+  }
   syncGearAll(character);
 }
 
@@ -266,6 +312,9 @@ function generateCharacter() {
   };
 
   const addGearItem = (category, item, fallbackTags = []) => {
+    if (item === undefined || item === null) {
+      return;
+    }
     if (!gear[category]) {
       gear[category] = [];
     }
@@ -275,12 +324,12 @@ function generateCharacter() {
   // Basic gear (1-2 items)
   const numBasicGear = randomInt(1, 2);
   for (let i = 0; i < numBasicGear; i++) {
-    addGearItem('misc', randomElement(data.miscGear), ['gear']);
+    addGearItem('misc', randomElement(data.miscGear, gear.misc, 'misc'), ['gear']);
   }
 
   // Advanced gear (50% chance)
   if (oneInN(2)) {
-    addGearItem('misc', randomElement(data.advancedGear), ['gear']);
+    addGearItem('misc', randomElement(data.advancedGear, gear.misc, 'misc'), ['gear']);
   }
 
   // Cybertech (50% chance)
@@ -291,17 +340,17 @@ function generateCharacter() {
   // Nano power (50% chance)
   let hasNanoPower = false;
   if (oneInN(10)) {
-    addGearItem('nanoPowers', randomElement(data.nanoPowers), ['nano']);
+    addGearItem('nanoPowers', randomElement(data.nanoPowers, gear.nanoPowers, 'nanoPowers'), ['nano']);
     hasNanoPower = true;
   }
   if (hasNanoPower) {
-    addGearItem('nanoInfestations', randomElement(data.nanoInfestations), ['nanoInfestation']);
+    addGearItem('nanoInfestations', randomElement(data.nanoInfestations, gear.nanoInfestations, 'nanoInfestations'), ['nanoInfestation']);
   }
 
   // Booster ammo for guns (weighted)
   const hasGun = weapon.tags && weapon.tags.includes('gun');
   if (hasGun && oneInN(2)) {
-    addGearItem('boosters', randomElement(data.boosters), ['booster']);
+    addGearItem('boosters', randomElement(data.boosters, gear.boosters, 'boosters'), ['booster']);
   }
 
   // Apps
@@ -309,7 +358,7 @@ function generateCharacter() {
   if (hasDeck) {
     const numApps = randomInt(1, 3);
     for (let i = 0; i < numApps; i++) {
-      addGearItem('apps', randomElement(data.apps), ['app']);
+      addGearItem('apps', randomElement(data.apps, gear.apps, 'apps'), ['app']);
     }
   }
 
