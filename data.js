@@ -218,6 +218,22 @@ export const wants = [
     "anarchy", "to burn it all down", "cash", "drugs", "enlightenment", "fame", "freedom", "fun", "justice", "love", "mayhem", "power over others", "revenge", "safety for loved ones", "to save the world", "to see others fail", "self-control", "self-transformation", "success", "to kill", "destruction", "revolution", "a way out", "self-sacrifice", "to make a mark", "change", "no one else to suffer as you did", "truth", "to try everything", "pleasure", "satisfaction"
 ];
 
+// ========== RANDO DOPE SHIT I THINK PLAYERS SHOULD HAVE ========
+export const rando = [
+    {name: "Peppergum", description: "Amphetamine laced chewing gum, for if you don't want to go to bed yet. Single use, +2 modifier on a single roll"},
+    {name: "Dippies", description: "A plethora of friendly uppers and downers. Adds +2 to one stat and -1 to the rest for an hour"},
+    {name: "Pork sandwich", description: "Documentaties have shown you there are no more pigs, but damn if this doesn't taste like one. Delicious."},
+    {name: "Hand fan", description: "Your highschool project, a messy pile of electonics with a simple purpose."},
+    {name: "Rainbow pointer", description: "A laserpointer with rainbow lights. Great for cats."},
+    {name: "Drowser can", description: "Three cans of Drowser. A real downer at parties. Disadvantage on rolls in which focus is required."},
+    {name: "Dud grenade", description: "An icosahedron shaped mini explosive that failed to detonate."},
+    {name: "Designer drops", description: "Hallucinogenic eyeball droppers."},
+    {name: "MiniAI CPU", description: "Mini AI chip salvaged from some kids toy"},
+    {name: "Neon ink", description: "Neon ink for drawing on your skin. Glows under UV light. Not tested for long term adverse effects"},
+    {name: "Smilies", description: "Small smiley face stickers which pass a designer dopamine through the skin. They are a real mood booster, but they don't last long."},
+    {name: "Pet rat", description: "It's not really a pet, but it's a real rat"},
+]
+
 // ========== WEAPONS ==========
 
 export const weapons = [

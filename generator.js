@@ -151,6 +151,7 @@ function buildGearAll(gear) {
 
   const groupedKeys = [
     'misc',
+    'random',
     'cybertech',
     'nanoPowers',
     'nanoInfestations',
@@ -303,6 +304,7 @@ function generateCharacter() {
     mags: rollMags(weapon),
     credits: randomInt(0, 100),
     misc: [],
+    random: [],
     cybertech: [],
     nanoPowers: [],
     nanoInfestations: [],
@@ -326,6 +328,9 @@ function generateCharacter() {
   for (let i = 0; i < numBasicGear; i++) {
     addGearItem('misc', randomElement(data.miscGear, gear.misc, 'misc'), ['gear']);
   }
+
+  // Add one item from the custom random list
+  addGearItem('random', randomElement(data.rando, gear.random, 'random'), ['random']);
 
   // Advanced gear (50% chance)
   if (oneInN(2)) {
@@ -618,6 +623,7 @@ async function initVueApp() {
           { key: 'nanoInfestations', title: 'Nano Infestations' },
           { key: 'apps', title: 'Apps' },
           { key: 'boosters', title: 'Boosters' },
+          { key: 'random', title: 'Random' },
           { key: 'misc', title: 'Gear' }
         ];
       },
@@ -632,6 +638,7 @@ async function initVueApp() {
           nanoInfestations: 'nano infestations',
           apps: 'apps',
           boosters: 'boosters',
+          random: 'random',
           misc: 'gear'
         };
 
@@ -679,7 +686,7 @@ async function initVueApp() {
           creditsAmount: this.character.gear.credits
         });
 
-        ['cybertech', 'nanoPowers', 'nanoInfestations', 'apps', 'boosters', 'misc'].forEach((bucketKey) => {
+        ['cybertech', 'nanoPowers', 'nanoInfestations', 'apps', 'boosters', 'random', 'misc'].forEach((bucketKey) => {
           (this.character.gear[bucketKey] || []).forEach((item) => pushItem(item, bucketKey));
         });
 

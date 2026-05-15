@@ -1,0 +1,7 @@
+Give me an eagles eye few of a 80 floor skyscraper. Leave out all details except for the 6th floor which is a train tunnel and the 8th floor which is a luxury mall. The 7th floor should be labelled "Secret" and should have no windows or doors.  
+
+Add random technical annotations: fake measurement labels (mm, GHz, RPM, µF), small block diagrams and dotted leader lines. Include snippets of pseudo‑schematics and weather information, all in a dot‑matrix monospaced font.
+
+Visual style: looks like it was printed on old thermal paper from a telex or dot‑matrix printer. CRT terminal aesthetic with scanlines and horizontal banding. Slight misalignment of characters, occasional corrupted or glitched glyphs, and faint horizontal tearing, as if the print head skipped. Very slight warp and skew as if the paper fed unevenly. Subtle paper grain and texture, with off‑white, slightly yellowed background like aged fax paper. Black ink only, no color. Lo‑fi, retro computing vibe. No shading except simple hatching or dither patterns, no smooth gradients.
+
+Overall: a single clean composition that feels like a scanned, slightly degraded printout from an old engineering terminal, with black ink on yellowed off‑white paper, no color.
